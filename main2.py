@@ -2,7 +2,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.agents import create_agent
+from langgraph.prebuilt import create_react_agent
+def isprime(num: int) -> str:
+    """Check if a number is prime."""
+    if num < 2:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
 def get_weather(city: str) -> str:
     """Get weather for a given city."""
@@ -13,15 +21,15 @@ model = ChatGoogleGenerativeAI(
     temperature=1.0,
 )
 
-agent = create_agent(
+agent = create_react_agent(
     model=model,
-    tools=[get_weather],
-    system_prompt="You are a helpful assistant",
+    tools=[get_weather, isprime],
+    prompt="You are a helpful assistant",
 )
 
 # Run the agent
 response = agent.invoke(
-    {"messages": [{"role": "user", "content": "what is the weather in sf"}]}
+    {"messages": [{"role": "user", "content": "what is the weather in mysore and is 2001 prime?"}]}
 )
 
 # Print only the final AI response
